@@ -1,0 +1,99 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heart of Hearts ❤️</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: radial-gradient(circle at center, #1a1a2e, #000);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const hearts = [];
+    const heartCount = 400;
+
+    // function to draw a small heart
+    function drawHeart(x, y, size, color) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(size, size);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(0, -3, -3, -3, -3, 0);
+      ctx.bezierCurveTo(-3, 3, 0, 5, 0, 7);
+      ctx.bezierCurveTo(0, 5, 3, 3, 3, 0);
+      ctx.bezierCurveTo(3, -3, 0, -3, 0, 0);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // generate heart particles using heart math formula
+    for (let i = 0; i < heartCount; i++) {
+      const t = Math.random() * Math.PI * 2;
+      const x = 16 * Math.pow(Math.sin(t), 3);
+      const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+
+      const scale = 20; // scale up
+      hearts.push({
+        x: canvas.width / 2 + x * scale,
+        y: canvas.height / 2 - y * scale,
+        size: Math.random() * 0.6 + 0.4,
+        color: "red",
+        dx: (Math.random() - 0.5) * 0.3,
+        dy: (Math.random() - 0.5) * 0.3,
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      hearts.forEach((h) => {
+        drawHeart(h.x, h.y, h.size, h.color);
+        h.x += h.dx;
+        h.y += h.dy;
+
+        if (h.x < 0 || h.x > canvas.width) h.dx *= -1;
+        if (h.y < 0 || h.y > canvas.height) h.dy *= -1;
+      });
+
+      // Cute glowing text inside heart
+      ctx.save();
+      ctx.font = "bold 40px Comic Sans MS";
+      ctx.textAlign = "center";
+      ctx.fillStyle = "pink";
+      ctx.shadowColor = "hotpink";
+      ctx.shadowBlur = 20;
+      ctx.fillText("I LOVE U", canvas.width / 2, canvas.height / 2 - 20);
+      ctx.fillText("MY PRINCESS", canvas.width / 2, canvas.height / 2 + 30);
+      ctx.restore();
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
+```
